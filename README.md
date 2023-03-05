@@ -21,7 +21,20 @@ gas_serial_number
 Run using Docker:
 
 ```bash
-docker run --env-file envs.list stuartb55/octopusconsumption
+octopusconsumption:
+  container_name: octopus
+  image: ghcr.io/stuartb55/octopusconsumption
+  restart: unless-stopped
+    environment:
+    - "token="
+    - "bucket_name="
+    - "org_name="
+    - "influx_url="
+    - "api_key="
+    - "electricity_mpan="
+    - "electricity_serial_number="
+    - "gas_mpan="
+    - "gas_serial_number="
 ```
 
 ## InfluxDB
