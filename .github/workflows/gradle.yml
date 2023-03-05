@@ -78,7 +78,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           tags: |
-            ghcr.io/${{ steps.lowercaseRepo.outputs.lowercase }}:master-${{ env.SHORT_SHA }}
+            ghcr.io/${{ github.repository }}:master-${{ env.SHORT_SHA }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
