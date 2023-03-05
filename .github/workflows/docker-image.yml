@@ -1,5 +1,5 @@
 name: Docker Image CI
-
+needs: Java CI with Gradle
 on:
   push:
     branches: ["master"]
