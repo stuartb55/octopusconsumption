@@ -61,15 +61,15 @@ public class OctopusConsumptionApplication {
 		logger.info("Gas Serial Number: " + G_SERIAL_NUMBER);
 	}
 
-	@Scheduled(cron = "00 00 09 * * *")
+	@Scheduled(cron = "00 00 10 * * *")
 	public void run() {
 		try {
-			logger.info("Running");
 			if (TOKEN != null && BUCKET != null && ORG != null && INFLUX_URL != null && API_KEY != null
 					&& E_MPAN != null
 					&& E_SERIAL_NUMBER != null && G_MPAN != null && G_SERIAL_NUMBER != null) {
-				saveDataInInflux("electricity", getDataFromOctopus(ELECTRICITY_URL));
-				saveDataInInflux("electricity", getDataFromOctopus(GAS_URL));
+				logger.info("Running");
+                                saveDataInInflux("electricity", getDataFromOctopus(ELECTRICITY_URL));
+				saveDataInInflux("gas", getDataFromOctopus(GAS_URL));
 			} else {
 				logger.error("!!! Missing Environment Variables - Exiting !!!");
 			}
