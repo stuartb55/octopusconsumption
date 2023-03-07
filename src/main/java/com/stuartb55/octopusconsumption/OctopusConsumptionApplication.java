@@ -1,31 +1,29 @@
 package com.stuartb55.octopusconsumption;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.client.WriteApi;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.springframework.web.client.RestTemplate;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.stream.IntStream;
 
 @SpringBootApplication
 @EnableScheduling
-@ConfigurationProperties
 @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
 public class OctopusConsumptionApplication {
 	private static final String TOKEN = System.getenv("token");
@@ -67,8 +65,8 @@ public class OctopusConsumptionApplication {
 			if (TOKEN != null && BUCKET != null && ORG != null && INFLUX_URL != null && API_KEY != null
 					&& E_MPAN != null
 					&& E_SERIAL_NUMBER != null && G_MPAN != null && G_SERIAL_NUMBER != null) {
-				logger.info("Running");
-                                saveDataInInflux("electricity", getDataFromOctopus(ELECTRICITY_URL));
+				logger.info("Environment Variable Check - Ok");
+				saveDataInInflux("electricity", getDataFromOctopus(ELECTRICITY_URL));
 				saveDataInInflux("gas", getDataFromOctopus(GAS_URL));
 			} else {
 				logger.error("!!! Missing Environment Variables - Exiting !!!");
@@ -85,12 +83,12 @@ public class OctopusConsumptionApplication {
 	}
 
 	public void saveDataInInflux(String type, JSONArray data) {
+		logger.info("Running: " + type);
 		InfluxDBClient influxDBClient = InfluxDBClientFactory.create(INFLUX_URL, TOKEN.toCharArray(), ORG, BUCKET);
 		try {
-			for (int i = 0; i < data.length(); i++) {
+			IntStream.range(0, data.length()).forEach(i -> {
 				Instant instant = LocalDateTime.parse(data.getJSONObject(i).getString("interval_start"),
 						DateTimeFormatter.ISO_OFFSET_DATE_TIME).atZone(ZoneId.of(TIME_ZONE)).toInstant();
-
 				if (data.getJSONObject(i).getFloat(CONSUMPTION) < LIMIT) {
 					Point point = Point.measurement("energy").addTag("type", type)
 							.addField(FIELD_NAME, data.getJSONObject(i).getFloat(CONSUMPTION))
@@ -99,7 +97,7 @@ public class OctopusConsumptionApplication {
 						writeApi.writePoint(point);
 					}
 				}
-			}
+			});
 		} catch (Exception e) {
 			logger.error("Error saving data to Influx", e);
 		} finally {
