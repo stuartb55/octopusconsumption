@@ -29,7 +29,7 @@ public class OctopusConsumptionApplication {
 	private static final String TOKEN = System.getenv("token");
 	private static final String BUCKET = System.getenv("bucket_name");
 	private static final String ORG = System.getenv("org_name");
-	private static final String FIELD_NAME = "field";
+	private static final String FIELD_NAME = "value";
 	private static final String INFLUX_URL = System.getenv("influx_url");
 	private static final String API_KEY = System.getenv("api_key");
 	private static final String E_MPAN = System.getenv("electricity_mpan");
