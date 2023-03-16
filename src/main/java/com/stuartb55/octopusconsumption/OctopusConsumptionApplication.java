@@ -43,9 +43,9 @@ public class OctopusConsumptionApplication {
     private static final String CONSUMPTION = "consumption";
     private static final Integer LIMIT = 150;
     private static final String ELECTRICITY_URL = "https://api.octopus.energy/v1/electricity-meter-points/" + E_MPAN
-        + "/meters/" + E_SERIAL_NUMBER + "/consumption/?page=1";
+            + "/meters/" + E_SERIAL_NUMBER + "/consumption/?page=1";
     private static final String GAS_URL = "https://api.octopus.energy/v1/gas-meter-points/" + G_MPAN + "/meters/"
-        + G_SERIAL_NUMBER + "/consumption/?page=1";
+            + G_SERIAL_NUMBER + "/consumption/?page=1";
 
     public static void main(String[] args) {
         SpringApplication.run(OctopusConsumptionApplication.class, args);
@@ -65,8 +65,8 @@ public class OctopusConsumptionApplication {
     public void run() {
         try {
             if (TOKEN != null && BUCKET != null && ORG != null && INFLUX_URL != null && API_KEY != null
-                && E_MPAN != null
-                && E_SERIAL_NUMBER != null && G_MPAN != null && G_SERIAL_NUMBER != null) {
+                    && E_MPAN != null
+                    && E_SERIAL_NUMBER != null && G_MPAN != null && G_SERIAL_NUMBER != null) {
                 logger.info("Environment Variable Check - Ok");
                 saveDataInInflux("electricity", getDataFromOctopus(ELECTRICITY_URL));
                 saveDataInInflux("gas", getDataFromOctopus(GAS_URL));
@@ -86,19 +86,18 @@ public class OctopusConsumptionApplication {
 
     public void saveDataInInflux(String type, JSONArray data) {
         logger.info("Running: " + type);
-        InfluxDBClient influxDBClient = InfluxDBClientFactory.create(INFLUX_URL, TOKEN.toCharArray(), ORG, BUCKET);
+        InfluxDBClient influxDbClient = InfluxDBClientFactory.create(INFLUX_URL, TOKEN.toCharArray(), ORG, BUCKET);
         try {
-            WriteApiBlocking writeApi = influxDBClient.getWriteApiBlocking();
+            WriteApiBlocking writeApi = influxDbClient.getWriteApiBlocking();
             List<Point> listPoint = new ArrayList<Point>();
             IntStream.range(0, data.length()).forEach(i -> {
                 Instant instant = LocalDateTime.parse(
-                    data.getJSONObject(i).getString("interval_start"),
-                    DateTimeFormatter.ISO_OFFSET_DATE_TIME
-                ).atZone(ZoneId.of(TIME_ZONE)).toInstant();
+                        data.getJSONObject(i).getString("interval_start"),
+                        DateTimeFormatter.ISO_OFFSET_DATE_TIME).atZone(ZoneId.of(TIME_ZONE)).toInstant();
                 if (data.getJSONObject(i).getFloat(CONSUMPTION) < LIMIT) {
                     Point point = Point.measurement("energy").addTag("type", type)
-                        .addField(FIELD_NAME, data.getJSONObject(i).getFloat(CONSUMPTION))
-                        .time(instant, WritePrecision.S);
+                            .addField(FIELD_NAME, data.getJSONObject(i).getFloat(CONSUMPTION))
+                            .time(instant, WritePrecision.S);
                     listPoint.add(point);
                 } else {
                     logger.error("Point out of range, check consumption data.");
@@ -108,7 +107,7 @@ public class OctopusConsumptionApplication {
         } catch (Exception e) {
             logger.error("Error saving data to Influx", e);
         } finally {
-            influxDBClient.close();
+            influxDbClient.close();
         }
     }
 }
