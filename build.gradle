@@ -20,7 +20,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web:3.3.3'
 	implementation 'com.influxdb:influxdb-client-java:7.2.0'
 	implementation 'org.json:json:20240303'
-	implementation 'org.yaml:snakeyaml:2.2'
+	implementation 'org.yaml:snakeyaml:2.3'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
