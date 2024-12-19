@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
 	id 'checkstyle'
-	id 'org.springframework.boot' version '3.4.0'
+	id 'org.springframework.boot' version '3.4.1'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'org.owasp.dependencycheck' version '11.1.1'
 	id 'pmd'
@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-web:3.4.0'
+	implementation 'org.springframework.boot:spring-boot-starter-web:3.4.1'
 	implementation 'com.influxdb:influxdb-client-java:7.2.0'
 	implementation 'org.json:json:20240303'
 	implementation 'org.yaml:snakeyaml:2.3'
