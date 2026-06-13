@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
 	id 'checkstyle'
-	id 'org.springframework.boot' version '4.0.6'
+	id 'org.springframework.boot' version '4.1.0'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'org.owasp.dependencycheck' version '12.2.2'
 	id 'pmd'
@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-web:4.0.6'
+	implementation 'org.springframework.boot:spring-boot-starter-web:4.1.0'
 	implementation 'org.springframework.boot:spring-boot-starter-restclient'
 	implementation 'com.influxdb:influxdb-client-java:8.0.0'
 	implementation 'org.json:json:20250517'
