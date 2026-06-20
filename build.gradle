@@ -25,7 +25,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web:4.1.0'
 	implementation 'org.springframework.boot:spring-boot-starter-restclient'
 	implementation 'com.influxdb:influxdb-client-java:8.0.0'
-	implementation 'org.json:json:20250517'
+	implementation 'org.json:json:20260522'
 	implementation 'org.yaml:snakeyaml:2.6'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
