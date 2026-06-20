@@ -26,7 +26,7 @@ import java.util.stream.IntStream;
 
 @SpringBootApplication
 @EnableScheduling
-@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+@SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidCatchingGenericException"})
 public class OctopusConsumptionApplication {
     private static final String TOKEN = System.getenv("token");
     private static final String BUCKET = System.getenv("bucket_name");
@@ -86,10 +86,10 @@ public class OctopusConsumptionApplication {
 
     public void saveDataInInflux(String type, JSONArray data) {
         logger.info("Running: " + type);
-        InfluxDBClient influxDbClient = InfluxDBClientFactory.create(INFLUX_URL, TOKEN.toCharArray(), ORG, BUCKET);
-        try {
+        try (InfluxDBClient influxDbClient = InfluxDBClientFactory.create(INFLUX_URL, TOKEN.toCharArray(), ORG,
+                BUCKET)) {
             WriteApiBlocking writeApi = influxDbClient.getWriteApiBlocking();
-            List<Point> listPoint = new ArrayList<Point>();
+            List<Point> listPoint = new ArrayList<>();
             IntStream.range(0, data.length()).forEach(i -> {
                 Instant instant = LocalDateTime.parse(
                         data.getJSONObject(i).getString("interval_start"),
@@ -106,8 +106,6 @@ public class OctopusConsumptionApplication {
             writeApi.writePoints(listPoint);
         } catch (Exception e) {
             logger.error("Error saving data to Influx", e);
-        } finally {
-            influxDbClient.close();
         }
     }
 }
